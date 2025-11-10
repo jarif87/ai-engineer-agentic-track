@@ -1,0 +1,4 @@
+crewai
+pydantic
+python-dotenv
+crewai[google-genai]

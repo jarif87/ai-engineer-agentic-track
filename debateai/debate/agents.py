@@ -1,0 +1,29 @@
+from crewai import Agent
+
+def create_debater():
+    return Agent(
+        role="A compelling debater",
+        goal="Present a clear argument either in favor of or against the motion. The motion is: {motion}",
+        backstory=(
+            "You're an experienced debater with a knack for giving concise but convincing arguments. "
+            "The motion is: {motion}"
+        ),
+        llm="openai/gpt-4o-mini",
+        verbose=True  
+    )
+
+def create_judge():
+    return Agent(
+        role="Decide the winner of the debate based on the arguments presented",
+        goal=(
+            "Given arguments for and against this motion: {motion}, decide which side is more convincing, "
+            "based purely on the arguments presented."
+        ),
+        backstory=(
+            "You are a fair judge with a reputation for weighing up arguments without factoring in "
+            "your own views, and making a decision based purely on the merits of the argument. "
+            "The motion is: {motion}"
+        ),
+        llm="google/gemini-2.5-flash",
+        verbose=True  
+    )

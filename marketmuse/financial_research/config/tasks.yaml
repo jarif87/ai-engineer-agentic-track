@@ -1,0 +1,27 @@
+research_task:
+  description: >
+    Conduct thorough, source-backed research on {company}. Focus on:
+    1. Current company status and financial health
+    2. Historical performance and key milestones
+    3. Major challenges, risks, and opportunities
+    4. Recent news, announcements, and events
+    5. Future outlook, strategic initiatives, and potential catalysts
+
+    Organize findings with clear Markdown sections, inline sources, and data tables where relevant.
+  expected_output: >
+    A detailed, well-structured research document saved as `output/research_{company}.md`.
+  agent: researcher
+  output_file: output/research_{company}.md
+  async_execution: false
+
+analysis_task:
+  description: >
+    Read the full research output and create a professional investment-grade report on {company}.
+    Include an executive summary, key findings, analytical commentary, and 12-month market outlook.
+  expected_output: >
+    A publication-ready investment report saved as `output/report.md`.
+  agent: analyst
+  context:
+    - research_task
+  output_file: output/report.md
+  async_execution: false

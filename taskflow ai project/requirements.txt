@@ -1,0 +1,12 @@
+langgraph
+langchain
+langchain-community
+playwright
+gradio
+python-dotenv
+ipython
+playwright 
+beautifulsoup4
+lxml 
+html5lib
+langchain-openai

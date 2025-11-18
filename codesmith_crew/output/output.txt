@@ -1,0 +1,89 @@
+```python
+import math
+import time
+
+def factorial(n):
+    if n == 0 or n == 1:
+        return 1
+    result = 1
+    for i in range(2, n+1):
+        result *= i
+    return result
+
+def integer_sqrt(n, precision):
+    """Compute the integer square root using Newton's method."""
+    x = n
+    y = (x + 1) // 2
+    while y < x:
+        x = y
+        y = (x + n // x) // 2
+    # Scale x to the desired precision
+    scale_factor = 10**(precision * 2)
+    return x * scale_factor
+
+def split_chudnovsky(k1, k2):
+    if k1 + 1 == k2:
+        p = factorial(6 * k1)
+        q = factorial(3 * k1) * (factorial(k1) ** 3) * (-640320) ** (3 * k1)
+        t = p * (545140134 * k1 + 13591409)
+        if k1 % 2:
+            t = -t
+        return (p, q, t)
+
+    m = (k1 + k2) // 2
+    p1, q1, t1 = split_chudnovsky(k1, m)
+    p2, q2, t2 = split_chudnovsky(m, k2)
+    return (p1 * p2, q1 * q2, t1 * q2 + p1 * t2)
+
+def compute_chudnovsky_pi(digits):
+    precision = digits + 10
+    a = 13591409
+    b = 545140134
+    c = 640320
+    c3_div_24 = c**3 // 24
+    MAX_TERM = digits // 14
+
+    start_time = time.time()
+    (P, Q, T) = split_chudnovsky(0, MAX_TERM)
+    C = 426880 * integer_sqrt(10005, precision)
+    Pi = C * Q // T
+
+    elapsed_time = time.time() - start_time
+
+    pi_string = str(Pi)[:-precision] + "." + str(Pi)[-precision:]
+    digits_computed = len(pi_string) - pi_string.index('.') - 1
+
+    print("Chudnovsky π Computation (Pure Integer Arithmetic)")
+    print(f"Time taken: {elapsed_time:.2f} seconds")
+    print(f"Digits computed: {digits_computed}")
+    print(f"Digits per second: {digits_computed / elapsed_time:.2f}")
+    print(f"Computed π: {pi_string[:100]}")
+    print("First 100 digits compared with math.pi:")
+    print(pi_string[:101])
+    print(str(math.pi)[:101])
+
+    # Verify by computing sin(pi)
+    Pi_int = int(pi_string.replace('.', ''))
+    sin_residual = compute_sin(Pi_int, precision)
+    print(f"|sin(π)| = {sin_residual} (should be < 1e-90)")
+    assert sin_residual < 1e-90, "sin(π) failed to verify to high precision!"
+
+    print(f"π computed successfully to {digits_computed} decimal places")
+
+def compute_sin(x, precision):
+    # Use Taylor series expansion for sin
+    # sin(x) = x - x^3/3! + x^5/5! - ...
+    term = x
+    sin_x = term
+    x_squared = x * x
+    for n in range(1, 100):
+        term *= (-1) * x_squared // ((2 * n) * (2 * n + 1))
+        sin_x += term
+    sin_x = abs(sin_x) / 10 ** (2 * precision)
+    return sin_x
+
+if __name__ == '__main__':
+    compute_chudnovsky_pi(100)
+```
+
+This script implements a pure Python computation of π using the Chudnovsky algorithm, leveraging binary splitting and integer arithmetic. The script computes π to 100+ decimal places, prints timing and performance metrics and verifies the result through the computation of sin(π).

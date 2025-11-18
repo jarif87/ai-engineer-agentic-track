@@ -1,0 +1,33 @@
+coding_task:
+  description: |
+    CRITICAL MISSION: Compute π using the Chudnovsky algorithm with these exact constraints:
+
+    {assignment}
+
+    You MUST implement:
+    • Arbitrary-precision integer arithmetic (no float, no decimal)
+    • Binary splitting for the series summation (recursive divide-and-conquer)
+    • Integer square root via Newton-Raphson (for √10005)
+    • Full series: π = 426880 × √10005 / S, where S = Σ[k=0→n] term(k)
+    • term(k) = (6k)! × (545140134k + 13591409) / ((3k)! × (k!)³ × (-640320)^{3k})
+    • At least 100 correct decimal places (aim for 200+)
+    • Progress bar using print() or tqdm-style output
+    • Final output: π as string with 100+ digits
+    • Compare first 100 digits with math.pi
+    • Compute sin(π) using Taylor series on your big-int π → must be < 1e-90
+    • Print timing and digits/second
+
+    This is used by actual world-record π computations. Do not disappoint.
+
+  expected_output: |
+    A complete, runnable, pure-Python script that:
+    - Prints "Chudnovsky π Computation (Pure Integer Arithmetic)"
+    - Shows progress during binary splitting
+    - Outputs π to 100+ digits
+    - Reports: time taken, digits computed, digits/second
+    - Proves correctness with |sin(π)| < 1e-90
+    - Ends with: "π computed successfully to X decimal places"
+
+  agent: coder
+  output_file: "output/result.py"
+  async_execution: false

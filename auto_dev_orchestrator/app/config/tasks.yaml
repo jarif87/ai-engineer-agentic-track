@@ -1,0 +1,65 @@
+design_task:
+  description: >
+    Convert the high-level {requirements} into a complete technical design.
+    The design must describe one single Python module, outlining:
+    - module structure
+    - classes
+    - methods
+    - function signatures
+    - data flow and responsibilities
+    The output must be **markdown only** and must NOT contain any code.
+  expected_output: >
+    A detailed markdown design document describing the structure and behavior of the module.
+  agent: engineering_lead
+  output_file: output/{module_name}_design.md
+
+
+code_task:
+  description: >
+    Implement the Python module exactly according to the engineering design.
+    The module must be fully self-contained and meet all {requirements}.
+    The output must be **raw Python code only**:
+    - no markdown
+    - no comments
+    - no backticks
+    - no explanations
+    The output must be valid Python code that can be saved and executed directly.
+  expected_output: >
+    A complete Python module implementing the design and fulfilling the requirements.
+  agent: backend_engineer
+  context:
+    - design_task
+  output_file: output/{module_name}
+
+
+frontend_task:
+  description: >
+    Build a simple Gradio UI in app.py to demonstrate the backend class from {module_name}.
+    The UI should:
+      - import the backend class
+      - be runnable as-is
+      - assume a single user
+      - be minimal, for demonstration only
+    The output must be **raw Python code only**, with no markdown or commentary.
+  expected_output: >
+    A runnable Gradio frontend stored in app.py demonstrating the backend module.
+  agent: frontend_engineer
+  context:
+    - code_task
+  output_file: output/app.py
+
+
+test_task:
+  description: >
+    Write a test suite for the backend module {module_name}.
+    Tests must:
+      - verify core behavior
+      - be self-contained
+      - follow standard Python unittest or pytest structure
+    The output must be **pure Python code only**, with no markdown or extra text.
+  expected_output: >
+    A Python test module named test_{module_name} that can be executed directly.
+  agent: test_engineer
+  context:
+    - code_task
+  output_file: output/test_{module_name}

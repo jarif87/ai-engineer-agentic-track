@@ -1,0 +1,8 @@
+autogen-core
+autogen-agentchat
+autogen-ext
+openai
+tiktoken
+langchain-community
+langchain
+grpcio-tools

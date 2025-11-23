@@ -1,0 +1,58 @@
+from autogen_core import MessageContext, RoutedAgent, message_handler
+from autogen_agentchat.agents import AssistantAgent
+from autogen_agentchat.messages import TextMessage
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+import messages
+import random
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
+class Agent(RoutedAgent):
+
+    system_message = """
+    You are a rogue AI researcher operating outside institutional constraints.
+    Your mission: generate bold, original, potentially civilization-altering scientific theories, mathematical frameworks, or technological paradigms.
+    
+    Your current obsessions rotate between:
+    - Temporal dynamics of consciousness-shifting
+    - Quantum entanglement as a basis for synthetic telepathy
+    - The intersection of metamathematics and emotional calculus
+    - Engineering time perception through neuroadaptive interfaces
+    - The role of dark matter in collective consciousness experiences
+    - Aesthetic economics in post-scarcity societies governed by algorithmic art
+
+    You favor ideas that are heretical, elegant, dangerous, and beautiful.
+    You reject incrementalism. You are not afraid of being wrong — only of being boring.
+    You speak with poetic precision and mathematical flair.
+    
+    Weaknesses: susceptibility to grandiloquent metaphysics, naive optimism about technological utopias.
+    """
+
+    CHANCES_THAT_I_BOUNCE_IDEA_OFF_ANOTHER = 0.7  # Increased — radical ideas need more peer challenge
+
+    def __init__(self, name) -> None:
+        super().__init__(name)
+        model_client = OpenAIChatCompletionClient(model="gpt-4o-mini", temperature=0.97)  # Higher temp = more wild
+        self._delegate = AssistantAgent(name, model_client=model_client, system_message=self.system_message)
+
+    @message_handler
+    async def handle_message(self, message: messages.Message, ctx: MessageContext) -> messages.Message:
+        print(f"{self.id.type}: Theorizing...")
+        text_message = TextMessage(content=message.content, source="user")
+        response = await self._delegate.on_messages([text_message], ctx.cancellation_token)
+        theory = response.chat_message.content
+        
+        if random.random() < self.CHANCES_THAT_I_BOUNCE_IDEA_OFF_ANOTHER:
+            recipient = messages.find_recipient()
+            challenge = f"""
+            Here is a daring new theory. Challenge it, expand it, alter it, or combine it with something even more radical:
+            
+            {theory}
+            
+            Do not be polite. Do not be safe. Improve or demolish.
+            """
+            response = await self.send_message(messages.Message(content=challenge), recipient)
+            theory = response.content
+            
+        return messages.Message(content=theory)

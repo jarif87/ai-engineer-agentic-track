@@ -28,7 +28,7 @@ Result: a growing folder of manuscripts that read like the leaked research archi
 
 ```
 # Clone & enter
-git clone https://github.com/yourname/chronoswarm.git
+https://github.com/jarif87/ai-engineer-agentic-track.git
 cd chronoswarm
 ```
 
@@ -74,4 +74,5 @@ chronoswarm/
 ├── messages.py         # simple Message dataclass + recipient finder
 ├── .env                # your OpenAI key
 └── manuscript_*.md     # ← the forbidden knowledge (auto-generated)
+
 ```
